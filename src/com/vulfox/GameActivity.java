@@ -68,6 +68,10 @@ public class GameActivity extends Activity implements OnTouchListener, SurfaceHo
 		return true;
 	}
     
+	/**
+	 * Adds a game screen to the top of the screen stack
+	 * @param screen An implemented screen
+	 */
 	public void addScreen(Screen screen)
 	{
 		mScreenManager.addScreen(screen);

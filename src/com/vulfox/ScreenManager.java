@@ -8,20 +8,47 @@ import android.view.MotionEvent;
 
 public class ScreenManager {
 
+	/**
+	 * Application context
+	 */
 	private Context mContext;
+	
+	/**
+	 * List of all the screens that are present in the game
+	 * Used as a stack to keep track of the top screen 
+	 */
 	private LinkedList<Screen> mScreenList;
 
+	/**
+	 * Width of the draw surface
+	 */
 	private int mWidth;
+	
+	/**
+	 * Height of the draw surface
+	 */
 	private int mHeight;
 
+	/**
+	 * Indicates if the manager has been initialized
+	 */
 	private boolean mInitialized;
 
+	/**
+	 * Creates a new uninitialized screen manager
+	 * @param context Application context
+	 */
 	public ScreenManager(Context context) {
 		mContext = context;
 		mScreenList = new LinkedList<Screen>();
 		mInitialized = false;
 	}
 
+	/**
+	 * Initializes the screen manager and any screens that have been added
+	 * @param width Width of the draw surface
+	 * @param height Height of the draw surface
+	 */
 	public synchronized void initialize(int width, int height) {
 		mWidth = width;
 		mHeight = height;
@@ -32,6 +59,10 @@ public class ScreenManager {
 		}
 	}
 
+	/**
+	 * Adds a screen to the top of the screen stack
+	 * @param screen A screen implementation
+	 */
 	public synchronized void addScreen(Screen screen) {
 		if (mInitialized) {
 			screen.initialize(mWidth, mHeight, mContext);
@@ -40,6 +71,10 @@ public class ScreenManager {
 		mScreenList.addLast(screen);
 	}
 
+	/**
+	 * Relays the motion event to the top screen 
+	 * @param motionEvent
+	 */
 	public void handleInput(MotionEvent motionEvent) {
 		if(!mInitialized) {
 			return;
@@ -51,6 +86,10 @@ public class ScreenManager {
 		}
 	}
 
+	/**
+	 * Updates the top screen
+	 * @param timeStep Time since the last frame in milliseconds
+	 */
 	public void update(float timeStep) {
 		if(!mInitialized) {
 			return;
@@ -62,6 +101,10 @@ public class ScreenManager {
 		}
 	}
 
+	/**
+	 * Draws the top screen
+	 * @param canvas Canvas to draw to
+	 */
 	public void draw(Canvas canvas) {
 		if(!mInitialized) {
 			return;

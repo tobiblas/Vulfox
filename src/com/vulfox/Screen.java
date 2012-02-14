@@ -6,15 +6,26 @@ import android.view.MotionEvent;
 
 public abstract class Screen {
 
+	/**
+	 * Width of the draw surface
+	 */
 	protected int mWidth;
+	
+	/**
+	 * Height of the draw surface
+	 */
 	protected int mHeight; 
+	
+	/**
+	 * Application context
+	 */
 	protected Context mContext;
 	
 	/**
 	 * Called when the surface manager has been initialized
-	 * @param width
-	 * @param height
-	 * @param context
+	 * @param width Width of the draw surface
+	 * @param height Height of the draw surface
+	 * @param context Application context
 	 */
 	protected final void initialize(int width, int height, Context context) {
 		mWidth = width;
@@ -25,24 +36,33 @@ public abstract class Screen {
 	}
 	
 	/**
-	 * Override to load content and set up your game data
+	 * Is called when the screen is initialized
 	 */
 	protected void initialize() {
 		
 	}
 	
-	public void update(float timeStep) {
-		
-	}
-	
-	public void draw(Canvas canvas) {
-		
-	}
-	
-	
+	/**
+	 * Is called once for every motion event at the beginning of a frame
+	 * @param motionEvent
+	 */
 	public void handleInput(MotionEvent motionEvent) {
 		
 	}
 	
+	/**
+	 * Is called once ever frame right after handleInput
+	 * @param timeStep Time since last frame in milliseconds
+	 */
+	public void update(float timeStep) {
+		
+	}
 	
+	/**
+	 * Is called once at the end of every frame
+	 * @param canvas Canvas to draw to
+	 */
+	public void draw(Canvas canvas) {
+		
+	}	
 }
