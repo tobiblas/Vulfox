@@ -43,6 +43,15 @@ public class ScreenManager {
 		mScreenList = new LinkedList<Screen>();
 		mInitialized = false;
 	}
+	
+	/**
+	 * Tells if the manager has been initialized
+	 * @return True if initialized
+	 */
+	public boolean isInitialized()
+	{
+		return mInitialized;
+	}
 
 	/**
 	 * Initializes the screen manager and any screens that have been added

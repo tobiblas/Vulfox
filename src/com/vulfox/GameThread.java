@@ -50,7 +50,7 @@ public class GameThread extends Thread {
 	private ScreenManager mScreenManager;
 	
 	/**
-	 * Holds any motion events that occured between frames
+	 * Holds any motion events that occurred between frames
 	 */
 	private LinkedList<MotionEvent> mMotionEvents;
 
@@ -129,8 +129,8 @@ public class GameThread extends Thread {
 	 * Add a motion event that will be handled the next frame
 	 * @param motionEvent A touch motion event
 	 */
-	public synchronized void onTouch(MotionEvent motionEvent) {
-		mMotionEvents.addLast(motionEvent);
+	public synchronized void onTouch(MotionEvent motionEvent) {		
+		mMotionEvents.addLast(MotionEvent.obtain(motionEvent));
 	}
 
 	/**
@@ -152,10 +152,16 @@ public class GameThread extends Thread {
 	 * @param height Height of the surface
 	 */
 	public synchronized void onSurfaceChanged(int width, int height) {
+		
 		mWidth = width;
 		mHeight = height;
 		mHasSurface = true;
-		mScreenManager.initialize(mWidth, mHeight);
+		
+		if(!mScreenManager.isInitialized())
+		{
+			mScreenManager.initialize(mWidth, mHeight);
+		}
+		
 		notify();
 	}
 
