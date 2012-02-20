@@ -64,7 +64,7 @@ public class ScreenManager {
 		mInitialized = true;
 
 		for (Screen screen : mScreenList) {
-			screen.initialize(mWidth, mHeight, mContext);
+			screen.initialize(mWidth, mHeight, mContext, this);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class ScreenManager {
 	 */
 	public synchronized void addScreen(Screen screen) {
 		if (mInitialized) {
-			screen.initialize(mWidth, mHeight, mContext);
+			screen.initialize(mWidth, mHeight, mContext, this);
 		}
 
 		mScreenList.addLast(screen);

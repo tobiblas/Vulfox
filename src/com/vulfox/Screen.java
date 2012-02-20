@@ -22,15 +22,21 @@ public abstract class Screen {
 	protected Context mContext;
 	
 	/**
+	 * Application screen manager
+	 */
+	protected ScreenManager mScreenManager;
+	
+	/**
 	 * Called when the surface manager has been initialized
 	 * @param width Width of the draw surface
 	 * @param height Height of the draw surface
 	 * @param context Application context
 	 */
-	protected final void initialize(int width, int height, Context context) {
+	protected final void initialize(int width, int height, Context context, ScreenManager screenManager) {
 		mWidth = width;
 		mHeight = height;
 		mContext = context;
+		mScreenManager = screenManager;
 		
 		initialize();
 	}

@@ -4,10 +4,27 @@ import java.util.LinkedList;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 public class GameThread extends Thread {
+
+	/**
+	 * Default frame delay time (30 fps)
+	 */
+	private static final long DEFAULT_FRAME_TIME = (long) Math
+			.round(1000.0 / 45.0);
+
+	/**
+	 * Indicates if the thread loop should use fixed time updates
+	 */
+	private boolean mFixedTimeStep;
+
+	/**
+	 * Total frame time in a fixed time step loop
+	 */
+	private long mFixedFrameTime = DEFAULT_FRAME_TIME;
 
 	/**
 	 * Indicates if the activity is paused or not
@@ -23,7 +40,7 @@ public class GameThread extends Thread {
 	 * Needed to load assets etc
 	 */
 	private Context mContext;
-	
+
 	/**
 	 * Surface to draw to
 	 */
@@ -33,12 +50,12 @@ public class GameThread extends Thread {
 	 * Indicates if the surface is ready for drawing
 	 */
 	private boolean mHasSurface;
-	
+
 	/**
 	 * Draw surface width
 	 */
 	private int mWidth;
-	
+
 	/**
 	 * Draw surface height
 	 */
@@ -48,7 +65,7 @@ public class GameThread extends Thread {
 	 * Manager for screen handling
 	 */
 	private ScreenManager mScreenManager;
-	
+
 	/**
 	 * Holds any motion events that occurred between frames
 	 */
@@ -56,15 +73,21 @@ public class GameThread extends Thread {
 
 	/**
 	 * Creates the game thread that will be handling the screens
-	 * @param surfaceHolder The surface we will be drawing to
-	 * @param context Application context for loading assets etc
-	 * @param screenManager The screen manager that will be holding the screens
+	 * 
+	 * @param surfaceHolder
+	 *            The surface we will be drawing to
+	 * @param context
+	 *            Application context for loading assets etc
+	 * @param screenManager
+	 *            The screen manager that will be holding the screens
 	 */
-	public GameThread(SurfaceHolder surfaceHolder, Context context, ScreenManager screenManager) {
+	public GameThread(SurfaceHolder surfaceHolder, Context context,
+			ScreenManager screenManager) {
 		mContext = context;
 		mSurfaceHolder = surfaceHolder;
 		mScreenManager = screenManager;
 		mMotionEvents = new LinkedList<MotionEvent>();
+		mFixedTimeStep = false;
 	}
 
 	/**
@@ -75,7 +98,7 @@ public class GameThread extends Thread {
 
 		Canvas canvas = null;
 		long startTime = System.nanoTime();
-		
+
 		while (!mDone) {
 
 			synchronized (this) {
@@ -86,27 +109,40 @@ public class GameThread extends Thread {
 						wait();
 					} catch (InterruptedException e) {
 					}
-					
+
 					startTime = System.nanoTime();
 				}
 
-				float timeStep = (float)((System.nanoTime() - startTime) / 1000000L);
+				float timeStep = (float) ((System.nanoTime() - startTime) / 1000000000d);
 				startTime = System.nanoTime();
-				
+
 				for (MotionEvent motionEvent : mMotionEvents) {
 					mScreenManager.handleInput(motionEvent);
-				}				
+				}
 				mMotionEvents.clear();
-				
+
 				mScreenManager.update(timeStep);
-				
+
 				canvas = mSurfaceHolder.lockCanvas();
-				if(canvas != null)
-				{
+				if (canvas != null) {
 					mScreenManager.draw(canvas);
 					mSurfaceHolder.unlockCanvasAndPost(canvas);
-				}								
-			}	
+				}
+
+				if (mFixedTimeStep) {
+					long frameTime = ((System.nanoTime() - startTime) / 1000000L);
+					long sleepTime = mFixedFrameTime - frameTime;
+					Log.d("timeStep", "timeStep: " + timeStep);
+					Log.d("frameTime", "frameTime: " + frameTime);
+					Log.d("sleepTime", "sleepTime: " + sleepTime);
+					if (sleepTime > 0) {
+						try {
+							Thread.sleep(sleepTime);
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -116,7 +152,7 @@ public class GameThread extends Thread {
 	public synchronized void onPause() {
 		mPaused = true;
 	}
-	
+
 	/**
 	 * Called when the activity is resuming execution
 	 */
@@ -124,12 +160,14 @@ public class GameThread extends Thread {
 		mPaused = false;
 		notify();
 	}
-	
+
 	/**
 	 * Add a motion event that will be handled the next frame
-	 * @param motionEvent A touch motion event
+	 * 
+	 * @param motionEvent
+	 *            A touch motion event
 	 */
-	public synchronized void onTouch(MotionEvent motionEvent) {		
+	public synchronized void onTouch(MotionEvent motionEvent) {
 		mMotionEvents.addLast(MotionEvent.obtain(motionEvent));
 	}
 
@@ -148,21 +186,43 @@ public class GameThread extends Thread {
 
 	/**
 	 * Called when the surface has changed dimensions
-	 * @param width Width of the surface
-	 * @param height Height of the surface
+	 * 
+	 * @param width
+	 *            Width of the surface
+	 * @param height
+	 *            Height of the surface
 	 */
 	public synchronized void onSurfaceChanged(int width, int height) {
-		
+
 		mWidth = width;
 		mHeight = height;
 		mHasSurface = true;
-		
-		if(!mScreenManager.isInitialized())
-		{
+
+		if (!mScreenManager.isInitialized()) {
 			mScreenManager.initialize(mWidth, mHeight);
 		}
-		
+
 		notify();
+	}
+
+	public boolean isFixedTimeStep() {
+		return mFixedTimeStep;
+	}
+
+	public void setmFixedTimeStep(boolean fixedTimeStep) {
+		mFixedTimeStep = fixedTimeStep;
+	}
+
+	public float getFixedFrameTime() {
+		return mFixedFrameTime;
+	}
+
+	public void setFixedFrameTime(long fixedFrameTime) {
+		mFixedFrameTime = fixedFrameTime;
+	}
+
+	public void setFixedFPS(int fps) {
+		mFixedFrameTime = (long) Math.round(1000.0 / fps);
 	}
 
 }
