@@ -10,7 +10,7 @@ import android.view.View.OnTouchListener;
 
 public class GameActivity extends Activity implements OnTouchListener, SurfaceHolder.Callback{
 	
-	private GameThread mGameThread;
+	protected GameThread mGameThread;
 	private ScreenManager mScreenManager;
 	
     /** Called when the activity is first created. */

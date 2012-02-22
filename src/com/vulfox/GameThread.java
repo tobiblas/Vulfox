@@ -87,7 +87,7 @@ public class GameThread extends Thread {
 		mSurfaceHolder = surfaceHolder;
 		mScreenManager = screenManager;
 		mMotionEvents = new LinkedList<MotionEvent>();
-		mFixedTimeStep = false;
+		mFixedTimeStep = true;
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class GameThread extends Thread {
 
 		Canvas canvas = null;
 		long startTime = System.nanoTime();
-
+		
 		while (!mDone) {
 
 			synchronized (this) {
@@ -116,10 +116,10 @@ public class GameThread extends Thread {
 				float timeStep = (float) ((System.nanoTime() - startTime) / 1000000000d);
 				startTime = System.nanoTime();
 
-				for (MotionEvent motionEvent : mMotionEvents) {
-					mScreenManager.handleInput(motionEvent);
-				}
-				mMotionEvents.clear();
+//				for (MotionEvent motionEvent : mMotionEvents) {
+//					mScreenManager.handleInput(motionEvent);
+//				}
+//				mMotionEvents.clear();
 
 				mScreenManager.update(timeStep);
 
@@ -128,22 +128,21 @@ public class GameThread extends Thread {
 					mScreenManager.draw(canvas);
 					mSurfaceHolder.unlockCanvasAndPost(canvas);
 				}
-
-				if (mFixedTimeStep) {
-					long frameTime = ((System.nanoTime() - startTime) / 1000000L);
-					long sleepTime = mFixedFrameTime - frameTime;
-					Log.d("timeStep", "timeStep: " + timeStep);
-					Log.d("frameTime", "frameTime: " + frameTime);
-					Log.d("sleepTime", "sleepTime: " + sleepTime);
-					if (sleepTime > 0) {
-						try {
-							Thread.sleep(sleepTime);
-						} catch (InterruptedException e) {
-						}
+			}
+			
+			if (mFixedTimeStep) {
+				long frameTime = ((System.nanoTime() - startTime) / 1000000L);
+				long sleepTime = mFixedFrameTime - frameTime;
+				if (sleepTime > 0) {
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
 					}
 				}
 			}
 		}
+		
+		
 	}
 
 	/**
@@ -168,7 +167,10 @@ public class GameThread extends Thread {
 	 *            A touch motion event
 	 */
 	public synchronized void onTouch(MotionEvent motionEvent) {
-		mMotionEvents.addLast(MotionEvent.obtain(motionEvent));
+		//mMotionEvents.addLast(MotionEvent.obtain(motionEvent));
+		if(mScreenManager.isInitialized()) {
+			mScreenManager.handleInput(motionEvent);
+		}
 	}
 
 	/**
@@ -209,7 +211,7 @@ public class GameThread extends Thread {
 		return mFixedTimeStep;
 	}
 
-	public void setmFixedTimeStep(boolean fixedTimeStep) {
+	public void setFixedTimeStep(boolean fixedTimeStep) {
 		mFixedTimeStep = fixedTimeStep;
 	}
 
