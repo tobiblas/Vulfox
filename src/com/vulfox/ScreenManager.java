@@ -91,7 +91,10 @@ public class ScreenManager {
 		
 		if (mScreenList.size() > 0) {
 			Screen topScreen = mScreenList.getLast();
-			topScreen.handleInput(motionEvent);
+			boolean eventConsumedByScreenComponent = topScreen.handleComponentInput(motionEvent);
+			if (!eventConsumedByScreenComponent) {
+				topScreen.handleInput(motionEvent);
+			}
 		}
 	}
 
@@ -122,6 +125,7 @@ public class ScreenManager {
 		if (mScreenList.size() > 0) {
 			Screen topScreen = mScreenList.getLast();
 			topScreen.draw(canvas);
+			topScreen.drawComponents(canvas);
 		}
 	}
 }
