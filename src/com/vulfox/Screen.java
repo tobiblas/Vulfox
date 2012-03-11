@@ -3,10 +3,13 @@ package com.vulfox;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vulfox.component.ScreenComponent;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
+
 
 public abstract class Screen {
 
@@ -164,6 +167,10 @@ public abstract class Screen {
 				}
 			}
 		}
+	}
+
+	public boolean handleBackPressed() {
+		return false;
 	}
 
 }

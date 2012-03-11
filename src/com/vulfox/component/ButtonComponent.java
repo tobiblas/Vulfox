@@ -1,4 +1,5 @@
-package com.vulfox;
+package com.vulfox.component;
+
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -76,7 +77,7 @@ public class ButtonComponent extends ScreenComponent {
 	}
 
 	@Override
-	void draw(Canvas canvas) {
+	public void draw(Canvas canvas) {
 		
 		if (background == null) {
 			// We don't have a background image. Draw rounded rects.
@@ -98,7 +99,7 @@ public class ButtonComponent extends ScreenComponent {
 	}
 
 	@Override
-	void handleActionDown(MotionEvent motionEvent, boolean insideConponent) {
+	public void handleActionDown(MotionEvent motionEvent, boolean insideConponent) {
 		if (insideConponent) {
 			pressed = true;
 		} else {
@@ -107,7 +108,7 @@ public class ButtonComponent extends ScreenComponent {
 	}
 
 	@Override
-	boolean handleActionUp(MotionEvent motionEvent, boolean insideConponent) {
+	public boolean handleActionUp(MotionEvent motionEvent, boolean insideConponent) {
 		boolean consumed = false;
 		if (pressed) {
 			if (insideConponent) {
@@ -122,7 +123,7 @@ public class ButtonComponent extends ScreenComponent {
 	}
 
 	@Override
-	void handleActionMove(MotionEvent motionEvent, boolean insideConponent) {
+	public void handleActionMove(MotionEvent motionEvent, boolean insideConponent) {
 		if (!insideConponent && pressed) {
 			pressed = false;
 		}

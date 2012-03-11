@@ -226,4 +226,8 @@ public class GameThread extends Thread {
 		mFixedFrameTime = (long) Math.round(1000.0 / fps);
 	}
 
+	public boolean onBackPressed() {
+		return mScreenManager.handleBackPressed();
+	}
+
 }

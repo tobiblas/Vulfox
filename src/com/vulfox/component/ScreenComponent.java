@@ -1,4 +1,4 @@
-package com.vulfox;
+package com.vulfox.component;
 
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -8,7 +8,7 @@ import android.view.MotionEvent;
  * 
  * @author tobiblas
  */
-abstract class ScreenComponent {
+public abstract class ScreenComponent {
 
 	/** The X position in the screen. */
 	private int positionX;
@@ -26,14 +26,14 @@ abstract class ScreenComponent {
 	 * Draws this component
 	 * @param canvas
 	 */
-	abstract void draw(Canvas canvas);
+	public abstract void draw(Canvas canvas);
 
 	/**
 	 * Called when someone touches a component
 	 * @param insideConponent
 	 * @param motionEvent
 	 */
-	abstract void handleActionDown(MotionEvent motionEvent, boolean insideConponent);
+	public abstract void handleActionDown(MotionEvent motionEvent, boolean insideConponent);
 
 	/**
 	 * 	Called when someone releases a component
@@ -41,7 +41,7 @@ abstract class ScreenComponent {
 	 * @param motionEvent
 	 * @return true if event was consumed.
 	 */
-	abstract boolean handleActionUp(MotionEvent motionEvent, boolean insideConponent);
+	public abstract boolean handleActionUp(MotionEvent motionEvent, boolean insideConponent);
 	
 	/**
 	 * Called when someone moves finger during touch.
@@ -49,7 +49,7 @@ abstract class ScreenComponent {
 	 * @param motionEvent
 	 * @param insideConponent 
 	 */
-	abstract void handleActionMove(MotionEvent motionEvent, boolean insideConponent);
+	public abstract void handleActionMove(MotionEvent motionEvent, boolean insideConponent);
 	
 	/**
 	 * @return the positionX

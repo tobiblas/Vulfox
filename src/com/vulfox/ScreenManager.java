@@ -79,6 +79,10 @@ public class ScreenManager {
 
 		mScreenList.addLast(screen);
 	}
+	
+	public synchronized boolean removeScreen(Screen screen) {
+		return mScreenList.remove(screen);
+	}
 
 	/**
 	 * Relays the motion event to the top screen 
@@ -127,5 +131,18 @@ public class ScreenManager {
 			topScreen.draw(canvas);
 			topScreen.drawComponents(canvas);
 		}
+	}
+
+	public boolean handleBackPressed() {
+		if (!mInitialized) {
+			return false;
+		}
+
+		if (mScreenList.size() > 0) {
+			Screen topScreen = mScreenList.getLast();
+			return topScreen.handleBackPressed();			
+		}
+		
+		return false;
 	}
 }

@@ -67,6 +67,13 @@ public class GameActivity extends Activity implements OnTouchListener, SurfaceHo
 		mGameThread.onTouch(event);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed() {
+		if (!mGameThread.onBackPressed()) {
+			super.onBackPressed();
+		}
+	}
     
 	/**
 	 * Adds a game screen to the top of the screen stack
