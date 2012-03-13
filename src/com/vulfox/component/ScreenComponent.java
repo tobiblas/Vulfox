@@ -65,6 +65,15 @@ public abstract class ScreenComponent {
 	public void setPositionX(int positionX) {
 		this.positionX = positionX;
 	}
+	
+	/**
+	 * @param positionX
+	 *            the positionX to set
+	 */
+	public void setPositionXInDp(int positionXinDp, int deviceDpi) {
+		float fraction = deviceDpi / 160.0f;
+		this.positionX = (int)(positionXinDp * (fraction));
+	}
 
 	/**
 	 * @return the positionY
@@ -79,6 +88,15 @@ public abstract class ScreenComponent {
 	 */
 	public void setPositionY(int positionY) {
 		this.positionY = positionY;
+	}
+	
+	/**
+	 * @param positionY
+	 *            the positionY to set
+	 */
+	public void setPositionYInDp(int positionYinDp, int deviceDpi) {
+		float fraction = deviceDpi / 160.0f;
+		this.positionY = (int)(positionYinDp * (fraction));
 	}
 
 	/**
@@ -109,6 +127,17 @@ public abstract class ScreenComponent {
 	 */
 	public void setHeight(int height) {
 		this.height = height;
+	}
+	
+	/**
+	 * @param widthDp Density-independent pixel
+	 * @param heightDp Density-independent pixel
+	 * @param deviceDpi dots per inch for the device. 
+	 */
+	public void setWidthAndHeightInDP(int widthDp, int heightDp, int deviceDpi) {
+		float fraction = deviceDpi / 160.0f;
+		this.height = (int)(heightDp * (fraction));
+		this.width = (int)(widthDp * (fraction));
 	}
 
 }

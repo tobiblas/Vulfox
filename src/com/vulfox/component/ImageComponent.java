@@ -13,6 +13,8 @@ public class ImageComponent extends ScreenComponent {
 	private Rect mRect;
 	
 	private Paint mImagePaint;
+	
+	private float aspectRatio;
 
 	public ImageComponent(Bitmap bitmap) {
 		mBitmap = bitmap;
@@ -20,6 +22,7 @@ public class ImageComponent extends ScreenComponent {
 		setWidth(mBitmap.getWidth());
 		mRect = new Rect();
 		mImagePaint = new Paint();
+		aspectRatio = mBitmap.getWidth() / (float)mBitmap.getHeight();
 	}
 
 	@Override
@@ -36,22 +39,37 @@ public class ImageComponent extends ScreenComponent {
 	@Override
 	public void handleActionDown(MotionEvent motionEvent,
 			boolean insideConponent) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean handleActionUp(MotionEvent motionEvent,
 			boolean insideConponent) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void handleActionMove(MotionEvent motionEvent,
 			boolean insideConponent) {
-		// TODO Auto-generated method stub
-
+	}
+	
+	/**
+	 * @param widthDp Density-independent pixel
+	 * @param deviceDpi dots per inch for the device. 
+	 */
+	public void setWidthInDpAutoSetHeight(int widthDp, int deviceDpi) {
+		float fraction = deviceDpi / 160.0f;
+		setWidth((int)(widthDp * fraction));
+		setHeight((int)(getWidth() / aspectRatio));
+	}
+	
+	/**
+	 * @param heightDp Density-independent pixel
+	 * @param deviceDpi dots per inch for the device. 
+	 */
+	public void setHeightInDpAutoSetWidth(int heightDp, int deviceDpi) {
+		float fraction = deviceDpi / 160.0f;
+		setHeight((int)(heightDp * fraction));
+		setWidth((int)(getHeight() * aspectRatio));
 	}
 
 }
