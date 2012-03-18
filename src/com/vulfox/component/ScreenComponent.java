@@ -134,7 +134,7 @@ public abstract class ScreenComponent {
 	 * @param heightDp Density-independent pixel
 	 * @param deviceDpi dots per inch for the device. 
 	 */
-	public void setWidthAndHeightInDP(int widthDp, int heightDp, int deviceDpi) {
+	public void setWidthAndHeightInDp(int widthDp, int heightDp, int deviceDpi) {
 		float fraction = deviceDpi / 160.0f;
 		this.height = (int)(heightDp * (fraction));
 		this.width = (int)(widthDp * (fraction));
