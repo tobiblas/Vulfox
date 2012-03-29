@@ -4,56 +4,28 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Typeface;
+import android.view.MotionEvent;
 
 import com.vulfox.ImageLoader;
 
 /**
- * A class representing a streachable button.
+ * A class representing an image.
  * 
  * @author tobiblas
  */
-public class StretchableImageButtonComponent extends ButtonComponent {
+public class StretchableImageComponent extends ScreenComponent {
 
-	/** The button bitmaps. */
+	/** The image bitmap. */
 	private Bitmap mBackground;
-	private Bitmap mBackgroundPressed;
-
-	/** The text on the button. */
-	private String mText;
-
-	/** Paints. */
-	private Paint mTextPaint;
-	private Paint mTextPaintShadow;
-	
-	/** Text rect. */
-	private Rect mTextRect;
 
 	/**
-	 * Loads images and constructs a strechable button. Consider not calling
+	 * Loads images and constructs a strechable image. Consider not calling
 	 * from UI thread since loading images might take time.
 	 */
-	public StretchableImageButtonComponent(Context context, int background,
-			int backgroundPressed, String text, int textColor,
-			int textShadowColor, float textSizeDp, int widthDp, int heightDp,
-			int dpi) {
+	public StretchableImageComponent(Context context, int background, int widthDp, int heightDp, int dpi) {
 
 		this.mBackground = ImageLoader.loadFromResource(context, background);
-		this.mBackgroundPressed = ImageLoader.loadFromResource(context,
-				backgroundPressed);
-
-		this.mText = text;
-		this.mTextPaint = new Paint();
-		this.mTextPaint.setColor(textColor);
-		this.mTextPaint.setAntiAlias(true);
-		this.mTextPaint.setTextSize((int) (textSizeDp * (dpi / 160.0f)));
-		this.mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
-		this.mTextPaintShadow = new Paint(mTextPaint);
-		this.mTextPaintShadow.setColor(textShadowColor);
-		this.mTextRect = new Rect();
-		this.mTextPaint.getTextBounds(mText, 0, mText.length(), mTextRect);
 
 		setWidthAndHeightInDp(widthDp, heightDp, dpi);
 
@@ -68,18 +40,7 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 				return;
 			}
 		}
-
-		try {
-			mBackgroundPressed = resizeBitmap(mBackgroundPressed);
-		} catch (OutOfMemoryError oomE1) {
-			System.gc();
-			try {
-				mBackgroundPressed = resizeBitmap(mBackgroundPressed);
-			} catch (OutOfMemoryError oomE2) {
-				// No memory. Skip it!
-				return;
-			}
-		}
+		
 	}
 
 	/**
@@ -189,24 +150,27 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 	@Override
 	public void draw(Canvas canvas) {
 
-		//Draw button image.
-		if (mBackground != null && !mPressed) {
+		//Draw image.
+		if (mBackground != null) {
 			canvas.drawBitmap(mBackground, getPositionX(), getPositionY(), null);
-		} else if (mBackgroundPressed != null && mPressed) {
-			canvas.drawBitmap(mBackgroundPressed, getPositionX(),
-					getPositionY(), null);
 		}
+	}
 
-		// Draw shadow text
-		canvas.drawText(mText, getPositionX() + getWidth() / 2 - mTextRect.width()
-				/ 2 + 2, getPositionY() + getHeight() / 2 + mTextRect.height() / 2
-				- mTextPaintShadow.getFontMetrics().descent / 2 + 2, mTextPaintShadow);
+	@Override
+	public void handleActionDown(MotionEvent motionEvent,
+			boolean insideConponent) {	
+	}
 
-		// Draw text
-		canvas.drawText(mText, getPositionX() + getWidth() / 2 - mTextRect.width()
-				/ 2, getPositionY() + getHeight() / 2 + mTextRect.height() / 2
-				- mTextPaint.getFontMetrics().descent / 2, mTextPaint);
+	@Override
+	public boolean handleActionUp(MotionEvent motionEvent,
+			boolean insideConponent) {
+		
+		return false;
+	}
 
+	@Override
+	public void handleActionMove(MotionEvent motionEvent,
+			boolean insideConponent) {
 	}
 
 }

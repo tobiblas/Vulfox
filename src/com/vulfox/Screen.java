@@ -3,12 +3,12 @@ package com.vulfox;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vulfox.component.ScreenComponent;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.vulfox.component.ScreenComponent;
 
 
 public abstract class Screen {
@@ -127,7 +127,6 @@ public abstract class Screen {
 							motionEvent.getX() < screenComponent.getPositionX() + screenComponent.getWidth() &&
 							motionEvent.getY() > screenComponent.getPositionY() &&
 							motionEvent.getY() < screenComponent.getPositionY() + screenComponent.getHeight()) {
-							Log.d("INSIDE", "WE ARE INSIDE COMPONENT!");	
 							insideConponent = true;
 					} 
 					
@@ -169,7 +168,11 @@ public abstract class Screen {
 		}
 	}
 
-	public boolean handleBackPressed() {
+	/**
+	 * Should be overridden by subclass if needed
+	 * @return
+	 */
+	protected boolean handleBackPressed() {
 		return false;
 	}
 

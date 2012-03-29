@@ -22,6 +22,8 @@ public class ImageLoader {
 			InputStream is = context.getResources().openRawResource(resourceID);
 			try {
 				bitmap = BitmapFactory.decodeStream(is);
+			} catch (OutOfMemoryError e) {
+				e.printStackTrace();
 			} finally {
 				try {
 					is.close();

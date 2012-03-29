@@ -36,11 +36,6 @@ public class GameThread extends Thread {
 	private boolean mDone;
 
 	/**
-	 * Needed to load assets etc
-	 */
-	private Context mContext;
-
-	/**
 	 * Surface to draw to
 	 */
 	private SurfaceHolder mSurfaceHolder;
@@ -80,9 +75,8 @@ public class GameThread extends Thread {
 	 * @param screenManager
 	 *            The screen manager that will be holding the screens
 	 */
-	public GameThread(SurfaceHolder surfaceHolder, Context context,
+	public GameThread(SurfaceHolder surfaceHolder,
 			ScreenManager screenManager) {
-		mContext = context;
 		mSurfaceHolder = surfaceHolder;
 		mScreenManager = screenManager;
 		mMotionEvents = new LinkedList<MotionEvent>();

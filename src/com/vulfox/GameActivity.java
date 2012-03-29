@@ -22,16 +22,15 @@ public class GameActivity extends Activity implements OnTouchListener, SurfaceHo
         SurfaceHolder holder = view.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL); //TODO: check other types.
         
-		mScreenManager = new ScreenManager(getApplicationContext());
+		mScreenManager = new ScreenManager(this.getApplicationContext());
         
-		mGameThread = new GameThread(holder, getApplicationContext(), mScreenManager);
+		mGameThread = new GameThread(holder, mScreenManager);
 		mGameThread.start();
 
     	holder.addCallback(this);
     	view.setOnTouchListener(this);
     	setContentView(view);	
     }
-
     
     @Override
     protected void onPause() {
