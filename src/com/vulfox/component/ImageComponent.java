@@ -5,9 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.view.MotionEvent;
 
-public class ImageComponent extends ScreenComponent {
+public class ImageComponent extends ButtonComponent {
 
 	private Bitmap mBitmap;
 
@@ -28,6 +27,10 @@ public class ImageComponent extends ScreenComponent {
 
 	@Override
 	public void draw(Canvas canvas) {
+		
+		if (!isVisible()) {
+			return;
+		}
 
 		// TODO: move to method.
 		mRect.set(getPositionX(), getPositionY(), getPositionX() + getWidth(),
@@ -51,24 +54,16 @@ public class ImageComponent extends ScreenComponent {
 		Matrix matrix = new Matrix();
 		matrix.postScale(scaleWidth, scaleHeight);
 
-		mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix,
+		Bitmap temp = Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix,
 				true);
-	}
-
-	@Override
-	public void handleActionDown(MotionEvent motionEvent,
-			boolean insideConponent) {
-	}
-
-	@Override
-	public boolean handleActionUp(MotionEvent motionEvent,
-			boolean insideConponent) {
-		return false;
-	}
-
-	@Override
-	public void handleActionMove(MotionEvent motionEvent,
-			boolean insideConponent) {
+		
+		//some phones cheats if target width and height is same as original. In that case do a copy or we will crash because of the recycle.
+		if (temp == mBitmap) {
+			temp = mBitmap.copy(mBitmap.getConfig(), mBitmap.isMutable() ? true : false);
+		}
+		
+		mBitmap.recycle();
+		mBitmap = temp;
 	}
 
 	/**
@@ -93,6 +88,13 @@ public class ImageComponent extends ScreenComponent {
 		float fraction = deviceDpi / 160.0f;
 		setHeight((int) (heightDp * fraction));
 		setWidth((int) (getHeight() * aspectRatio));
+	}
+
+	/**
+	 * @return the mBitmap
+	 */
+	public Bitmap getBitmap() {
+		return mBitmap;
 	}
 
 }

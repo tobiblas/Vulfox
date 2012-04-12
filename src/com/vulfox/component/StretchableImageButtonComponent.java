@@ -3,6 +3,8 @@ package com.vulfox.component;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -30,7 +32,32 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 	
 	/** Text rect. */
 	private Rect mTextRect;
+	
+	/** Used if no image pressed is supplied. */
+	private Paint mTintPaint = new Paint();
 
+
+	/**
+	 * Copies the graphics from another image button. Use this is you need the exact same button as another one
+	 * and want to save memory.
+	 */
+	public StretchableImageButtonComponent(StretchableImageButtonComponent other) {
+
+		this.mBackground = other.mBackground;
+		this.mBackgroundPressed = other.mBackgroundPressed;
+
+		this.mText = other.mText;
+		this.mTextPaint = other.mTextPaint;
+		this.mTextPaintShadow = other.mTextPaintShadow;
+		this.mTextRect = other.mTextRect;
+
+		setHeight(other.getHeight());
+		setWidth(other.getWidth());
+		
+		ColorFilter filter = new LightingColorFilter(0x11cccccc, 1);
+		mTintPaint.setColorFilter(filter);
+	}
+	
 	/**
 	 * Loads images and constructs a strechable button. Consider not calling
 	 * from UI thread since loading images might take time.
@@ -80,6 +107,46 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 				return;
 			}
 		}
+	}
+	
+	/**
+	 * Loads images and constructs a strechable button. Consider not calling
+	 * from UI thread since loading images might take time.
+     * Will use a colorfilter on the background image when pressed.
+	 */
+	public StretchableImageButtonComponent(Context context, int background,
+			String text, int textColor, int textShadowColor, float textSizeDp, 
+			int widthDp, int heightDp, int dpi) {
+
+		this.mBackground = ImageLoader.loadFromResource(context, background);
+
+		this.mText = text;
+		this.mTextPaint = new Paint();
+		this.mTextPaint.setColor(textColor);
+		this.mTextPaint.setAntiAlias(true);
+		this.mTextPaint.setTextSize((int) (textSizeDp * (dpi / 160.0f)));
+		this.mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
+		this.mTextPaintShadow = new Paint(mTextPaint);
+		this.mTextPaintShadow.setColor(textShadowColor);
+		this.mTextRect = new Rect();
+		this.mTextPaint.getTextBounds(mText, 0, mText.length(), mTextRect);
+
+		setWidthAndHeightInDp(widthDp, heightDp, dpi);
+
+		try {
+			mBackground = resizeBitmap(mBackground);
+		} catch (OutOfMemoryError oomE1) {
+			System.gc();
+			try {
+				mBackground = resizeBitmap(mBackground);
+			} catch (OutOfMemoryError oomE2) {
+				// No memory. Skip it!
+				return;
+			}
+		}
+		
+		ColorFilter filter = new LightingColorFilter(0x11cccccc, 1);
+		mTintPaint.setColorFilter(filter);
 	}
 
 	/**
@@ -195,6 +262,9 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 		} else if (mBackgroundPressed != null && mPressed) {
 			canvas.drawBitmap(mBackgroundPressed, getPositionX(),
 					getPositionY(), null);
+		} else if (mBackgroundPressed == null && mPressed) {
+			canvas.drawBitmap(mBackground, getPositionX(),
+					getPositionY(), mTintPaint);
 		}
 
 		// Draw shadow text

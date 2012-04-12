@@ -22,6 +22,9 @@ public abstract class ScreenComponent {
 	/** The height of the component. */
 	private int height;
 	
+	/** Boolean for visibility. */
+	private boolean mVisible = true;
+	
 	/**
 	 * Draws this component
 	 * @param canvas
@@ -138,6 +141,20 @@ public abstract class ScreenComponent {
 		float fraction = deviceDpi / 160.0f;
 		this.height = (int)(heightDp * (fraction));
 		this.width = (int)(widthDp * (fraction));
+	}
+
+	/**
+	 * @return the mVisible
+	 */
+	public boolean isVisible() {
+		return mVisible;
+	}
+
+	/**
+	 * @param visible the visible to set
+	 */
+	public void setVisible(boolean visible) {
+		this.mVisible = visible;
 	}
 
 }

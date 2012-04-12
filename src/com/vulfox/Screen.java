@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.vulfox.component.ScreenComponent;
@@ -62,6 +61,13 @@ public abstract class Screen {
 	 * Is called when the screen is initialized
 	 */
 	protected void initialize() {
+
+	}
+	
+	/**
+	 * Is called when the screen comes on top of all screens.
+	 */
+	protected void onTop() {
 
 	}
 

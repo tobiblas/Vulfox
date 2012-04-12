@@ -78,10 +78,18 @@ public class ScreenManager {
 		}
 
 		mScreenList.addLast(screen);
+		screen.onTop();
 	}
 	
 	public synchronized boolean removeScreen(Screen screen) {
-		return mScreenList.remove(screen);
+		
+		boolean result = mScreenList.remove(screen);
+		
+		if (!mScreenList.isEmpty()) {
+			mScreenList.getLast().onTop();
+		}
+		
+		return result;
 	}
 
 	/**

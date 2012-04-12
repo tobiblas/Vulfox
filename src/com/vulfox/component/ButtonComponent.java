@@ -24,8 +24,7 @@ public abstract class ButtonComponent extends ScreenComponent {
 		boolean consumed = false;
 		if (mPressed) {
 			if (insideConponent) {
-				buttonClicked();
-				consumed = true;
+				consumed = buttonClicked();
 			} 
 			mPressed = false;
 		}
@@ -48,10 +47,12 @@ public abstract class ButtonComponent extends ScreenComponent {
 	/**
 	 * Called when a button is clicked.
 	 */
-	public void buttonClicked() {
+	public final boolean buttonClicked() {
+		boolean consumed = false;
 		if (listener != null) {
-			listener.handleButtonClicked();
+			consumed = listener.handleButtonClicked();
 		}
+		return consumed;
 	}
 	
 }
