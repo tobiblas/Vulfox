@@ -22,7 +22,7 @@ public class GraphicsUtil {
 	 * width as well to preserve aspect ratio. 2. Either add or remove stripes
 	 * in the middle to get the correct width.
 	 */
-	public static Bitmap resizeBitmap(Bitmap bitmap, int newHeight, int newWidth) {
+	public static Bitmap resizeBitmap9PatchStyle(Bitmap bitmap, int newHeight, int newWidth) {
 
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
@@ -119,5 +119,27 @@ public class GraphicsUtil {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * Resize the bitmap. Take the provided bitmap and resize it. 
+	 * Recycle the previous bitmap to save memory.
+	 */
+	public static Bitmap resizeBitmap(Bitmap bitmap, int newHeight, int newWidth) {
+
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		float scaleHeight = ((float) newHeight) / height;
+		float scaleWidth = ((float) newWidth) / width;
+
+		// keep the aspect ratio for now. i.e. set width to appropriate value.
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+
+		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+		
+		bitmap.recycle();
+		
+		return scaledBitmap;
 	}
 }

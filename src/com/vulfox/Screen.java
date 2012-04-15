@@ -15,12 +15,12 @@ public abstract class Screen {
 	/**
 	 * Width of the draw surface
 	 */
-	protected int mWidth;
+	private int mWidth;
 
 	/**
 	 * Height of the draw surface
 	 */
-	protected int mHeight;
+	private int mHeight;
 
 	/**
 	 * Application context
@@ -180,6 +180,20 @@ public abstract class Screen {
 	 */
 	protected boolean handleBackPressed() {
 		return false;
+	}
+
+	/**
+	 * @return the mWidth
+	 */
+	public int getWidth() {
+		return mWidth;
+	}
+
+	/**
+	 * @return the mHeight
+	 */
+	public int getHeight() {
+		return mHeight;
 	}
 
 }

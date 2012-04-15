@@ -2,6 +2,8 @@ package com.vulfox.component;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -15,14 +17,25 @@ public class ImageComponent extends ButtonComponent {
 	private Paint mImagePaint;
 
 	private float aspectRatio;
+	
+	private boolean mTintWhenClicked;
+	
+	/** Used if clickable. */
+	private Paint mTintPaint;
 
-	public ImageComponent(Bitmap bitmap) {
+	public ImageComponent(Bitmap bitmap, boolean tintWhenClicked) {
 		mBitmap = bitmap;
 		setHeight(mBitmap.getHeight());
 		setWidth(mBitmap.getWidth());
+		mTintWhenClicked = tintWhenClicked;
 		mRect = new Rect();
 		mImagePaint = new Paint();
 		aspectRatio = mBitmap.getWidth() / (float) mBitmap.getHeight();
+		if (tintWhenClicked) {
+			mTintPaint = new Paint();
+			ColorFilter filter = new LightingColorFilter(0x11cccccc, 1);
+			mTintPaint.setColorFilter(filter);
+		}
 	}
 
 	@Override
@@ -31,13 +44,25 @@ public class ImageComponent extends ButtonComponent {
 		if (!isVisible()) {
 			return;
 		}
-
+		
 		// TODO: move to method.
 		mRect.set(getPositionX(), getPositionY(), getPositionX() + getWidth(),
 				getPositionY() + getHeight());
 
 		mImagePaint.setAntiAlias(true);
-		canvas.drawBitmap(mBitmap, null, mRect, mImagePaint);
+
+		//Draw button image.
+		if (mTintWhenClicked) {
+			if (!mPressed) {
+				canvas.drawBitmap(mBitmap, null, mRect, mImagePaint);
+			} else {
+				canvas.drawBitmap(mBitmap, getPositionX(),
+						getPositionY(), mTintPaint);
+			}
+		} else {
+			canvas.drawBitmap(mBitmap, null, mRect, mImagePaint);
+		}
+		
 	}
 
 	/**
