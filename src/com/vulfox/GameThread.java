@@ -1,8 +1,5 @@
 package com.vulfox;
 
-import java.util.LinkedList;
-
-import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -61,11 +58,6 @@ public class GameThread extends Thread {
 	private ScreenManager mScreenManager;
 
 	/**
-	 * Holds any motion events that occurred between frames
-	 */
-	private LinkedList<MotionEvent> mMotionEvents;
-
-	/**
 	 * Creates the game thread that will be handling the screens
 	 * 
 	 * @param surfaceHolder
@@ -79,7 +71,6 @@ public class GameThread extends Thread {
 			ScreenManager screenManager) {
 		mSurfaceHolder = surfaceHolder;
 		mScreenManager = screenManager;
-		mMotionEvents = new LinkedList<MotionEvent>();
 		mFixedTimeStep = true;
 	}
 
