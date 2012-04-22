@@ -256,6 +256,10 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 	@Override
 	public void draw(Canvas canvas) {
 
+		if (!isVisible()) {
+			return;
+		}
+		
 		//Draw button image.
 		if (mBackground != null && !mPressed) {
 			canvas.drawBitmap(mBackground, getPositionX(), getPositionY(), null);
