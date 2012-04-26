@@ -283,4 +283,11 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 
 	}
 
+	/**
+	 * @return the mBackground
+	 */
+	public Bitmap getBitmap() {
+		return mBackground;
+	}
+
 }
