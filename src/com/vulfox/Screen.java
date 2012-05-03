@@ -3,6 +3,7 @@ package com.vulfox;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -112,6 +113,16 @@ public abstract class Screen {
 	 */
 	public void draw(Canvas canvas) {
 
+	}
+	
+	/**
+	 * Is called by the game activity if a dialog is to be shown.
+	 * 
+	 * @param id
+	 *            The id for the dialog to show.
+	 */
+	protected Dialog onCreateDialog(int id) {
+		return null;
 	}
 
 	/**

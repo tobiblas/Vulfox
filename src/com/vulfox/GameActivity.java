@@ -82,5 +82,12 @@ public class GameActivity extends Activity implements OnTouchListener, SurfaceHo
 	{
 		mScreenManager.addScreen(screen);
 	}
+
+	/**
+	 * @return the mScreenManager
+	 */
+	public ScreenManager getScreenManager() {
+		return mScreenManager;
+	}
     
 }

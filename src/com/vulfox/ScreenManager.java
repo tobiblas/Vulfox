@@ -2,6 +2,7 @@ package com.vulfox;
 
 import java.util.LinkedList;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -90,6 +91,13 @@ public class ScreenManager {
 		}
 		
 		return result;
+	}
+	
+	public synchronized Dialog onCreateDialog(int id) {
+		if (!mScreenList.isEmpty()) {
+			return mScreenList.getLast().onCreateDialog(id);
+		}
+		return null;
 	}
 
 	/**
