@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Bundle;
 import android.view.MotionEvent;
 
 import com.vulfox.component.ScreenComponent;
@@ -36,7 +37,13 @@ public abstract class Screen {
 	/**
 	 * A list of screen components. Can be empty if no components is used.
 	 */
-	private List<ScreenComponent> screenComponents = new ArrayList<ScreenComponent>();
+	private List<ScreenComponent> mScreenComponents = new ArrayList<ScreenComponent>();
+	
+	/**
+	 * Boolean telling if this screen covers the screen behind it. If set to
+	 * false screenManager will first draw the screen below this one.
+	 */
+	private boolean mCoversWholeScreen = true;
 
 	/**
 	 * Called when the surface manager has been initialized
@@ -78,11 +85,11 @@ public abstract class Screen {
 	 * @param button
 	 */
 	public void addScreenComponent(ScreenComponent component) {
-		synchronized (screenComponents) {
-			if (screenComponents == null) {
-				screenComponents = new ArrayList<ScreenComponent>();
+		synchronized (mScreenComponents) {
+			if (mScreenComponents == null) {
+				mScreenComponents = new ArrayList<ScreenComponent>();
 			}
-			screenComponents.add(component);
+			mScreenComponents.add(component);
 		}
 	}
 
@@ -121,7 +128,7 @@ public abstract class Screen {
 	 * @param id
 	 *            The id for the dialog to show.
 	 */
-	protected Dialog onCreateDialog(int id) {
+	protected Dialog onCreateDialog(int id, Dialog dialog, Bundle args) {
 		return null;
 	}
 
@@ -133,10 +140,10 @@ public abstract class Screen {
 	 */
 	public boolean handleComponentInput(MotionEvent motionEvent) {
 		boolean consumed = false;
-		synchronized (screenComponents) {
-			if (screenComponents != null) {
-				for (int i = 0; i < screenComponents.size(); i++) {
-					ScreenComponent screenComponent = screenComponents.get(i);
+		synchronized (mScreenComponents) {
+			if (mScreenComponents != null) {
+				for (int i = 0; i < mScreenComponents.size(); i++) {
+					ScreenComponent screenComponent = mScreenComponents.get(i);
 					boolean insideConponent = false;
 					
 					//Check if touch was inside screenComponent bounds.
@@ -175,10 +182,10 @@ public abstract class Screen {
 	}
 
 	public void drawComponents(Canvas canvas) {
-		synchronized (screenComponents) {
-			if (screenComponents != null) {
-				for (int i = 0; i < screenComponents.size(); i++) {
-					ScreenComponent screenComponent = screenComponents.get(i);
+		synchronized (mScreenComponents) {
+			if (mScreenComponents != null) {
+				for (int i = 0; i < mScreenComponents.size(); i++) {
+					ScreenComponent screenComponent = mScreenComponents.get(i);
 					screenComponent.draw(canvas);
 				}
 			}
@@ -205,6 +212,20 @@ public abstract class Screen {
 	 */
 	public int getHeight() {
 		return mHeight;
+	}
+
+	/**
+	 * @return the coversWholeScreen
+	 */
+	public boolean coversWholeScreen() {
+		return mCoversWholeScreen;
+	}
+
+	/**
+	 * @param coversWholeScreen the coversWholeScreen to set
+	 */
+	public void setCoversWholeScreen(boolean coversWholeScreen) {
+		this.mCoversWholeScreen = coversWholeScreen;
 	}
 
 }

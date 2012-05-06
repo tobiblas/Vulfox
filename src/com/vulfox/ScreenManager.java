@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Bundle;
 import android.view.MotionEvent;
 
 public class ScreenManager {
@@ -93,9 +94,9 @@ public class ScreenManager {
 		return result;
 	}
 	
-	public synchronized Dialog onCreateDialog(int id) {
+	public synchronized Dialog onCreateDialog(int id, Dialog dialog, Bundle args) {
 		if (!mScreenList.isEmpty()) {
-			return mScreenList.getLast().onCreateDialog(id);
+			return mScreenList.getLast().onCreateDialog(id, dialog, args);
 		}
 		return null;
 	}
@@ -128,8 +129,17 @@ public class ScreenManager {
 		}
 		
 		if (mScreenList.size() > 0) {
+			
 			Screen topScreen = mScreenList.getLast();
-			topScreen.update(timeStep);
+			if (topScreen.coversWholeScreen()) {
+				topScreen.update(timeStep);
+			} else {
+				if (mScreenList.size() > 1) {
+					Screen backScreen = mScreenList.get(mScreenList.size() - 2);
+					backScreen.update(timeStep);
+					topScreen.update(timeStep);
+				}
+			}
 		}
 	}
 
@@ -143,9 +153,20 @@ public class ScreenManager {
 		}
 		
 		if (mScreenList.size() > 0) {
+			
 			Screen topScreen = mScreenList.getLast();
-			topScreen.draw(canvas);
-			topScreen.drawComponents(canvas);
+			if (topScreen.coversWholeScreen()) {
+				topScreen.draw(canvas);
+				topScreen.drawComponents(canvas);
+			} else {
+				if (mScreenList.size() > 1) {
+					Screen backScreen = mScreenList.get(mScreenList.size() - 2);
+					backScreen.draw(canvas);
+					backScreen.drawComponents(canvas);
+					topScreen.draw(canvas);
+					topScreen.drawComponents(canvas);
+				}
+			}
 		}
 	}
 
@@ -161,4 +182,22 @@ public class ScreenManager {
 		
 		return false;
 	}
+
+	
+	public synchronized boolean removeTopScreen() {
+		
+		if (!mInitialized) {
+			return false;
+		}
+		
+		if (mScreenList.size() > 0) {
+			mScreenList.removeLast();
+			if (!mScreenList.isEmpty()) {
+				mScreenList.getLast().onTop();
+			}
+		}
+
+		return true;
+	}
+
 }
