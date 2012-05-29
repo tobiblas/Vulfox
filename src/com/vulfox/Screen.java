@@ -191,6 +191,23 @@ public abstract class Screen {
 			}
 		}
 	}
+	
+	/**
+	 * Is called once every frame
+	 * 
+	 * @param timeStep
+	 *            Time since last frame in milliseconds
+	 */
+	public void updateComponents(float timeStep) {
+		synchronized (mScreenComponents) {
+			if (mScreenComponents != null) {
+				for (int i = 0; i < mScreenComponents.size(); i++) {
+					ScreenComponent screenComponent = mScreenComponents.get(i);
+					screenComponent.update(timeStep);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Should be overridden by subclass if needed

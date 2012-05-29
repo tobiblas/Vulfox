@@ -129,6 +129,11 @@ public class GraphicsUtil {
 
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
+		
+		if (width == newWidth && height == newHeight) {
+			return bitmap;
+		}
+		
 		float scaleHeight = ((float) newHeight) / height;
 		float scaleWidth = ((float) newWidth) / width;
 

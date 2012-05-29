@@ -30,6 +30,12 @@ public abstract class ScreenComponent {
 	 * @param canvas
 	 */
 	public abstract void draw(Canvas canvas);
+	
+	/**
+	 * Updates this component
+	 * @param timeStep
+	 */
+	public abstract void update(float timeStep);
 
 	/**
 	 * Called when someone touches a component

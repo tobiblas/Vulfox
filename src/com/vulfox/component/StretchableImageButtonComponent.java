@@ -290,4 +290,8 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 		return mBackground;
 	}
 
+	@Override
+	public void update(float timeStep) {
+	}
+
 }

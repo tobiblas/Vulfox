@@ -133,11 +133,14 @@ public class ScreenManager {
 			Screen topScreen = mScreenList.getLast();
 			if (topScreen.coversWholeScreen()) {
 				topScreen.update(timeStep);
+				topScreen.updateComponents(timeStep);
 			} else {
 				if (mScreenList.size() > 1) {
 					Screen backScreen = mScreenList.get(mScreenList.size() - 2);
 					backScreen.update(timeStep);
+					backScreen.updateComponents(timeStep);
 					topScreen.update(timeStep);
+					topScreen.updateComponents(timeStep);
 				}
 			}
 		}

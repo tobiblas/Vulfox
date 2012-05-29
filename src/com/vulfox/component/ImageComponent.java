@@ -122,4 +122,8 @@ public class ImageComponent extends ButtonComponent {
 		return mBitmap;
 	}
 
+	@Override
+	public void update(float timeStep) {
+	}
+
 }
