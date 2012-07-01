@@ -8,42 +8,44 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-public class GameActivity extends Activity implements OnTouchListener, SurfaceHolder.Callback{
-	
+public class GameActivity extends Activity implements OnTouchListener,
+		SurfaceHolder.Callback {
+
 	protected GameThread mGameThread;
 	private ScreenManager mScreenManager;
-	
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        SurfaceView view = new SurfaceView(getApplicationContext());
-        SurfaceHolder holder = view.getHolder();
-        holder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL); //TODO: check other types.
-        
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		SurfaceView view = new SurfaceView(getApplicationContext());
+		SurfaceHolder holder = view.getHolder();
+		holder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL); // TODO: check other
+															// types.
+
 		mScreenManager = new ScreenManager(this.getApplicationContext());
-        
+
 		mGameThread = new GameThread(holder, mScreenManager);
 		mGameThread.start();
 
-    	holder.addCallback(this);
-    	view.setOnTouchListener(this);
-    	setContentView(view);	
-    }
-    
-    @Override
-    protected void onPause() {
-    	super.onPause(); 	
-    	mGameThread.onPause();
-    }
-  
-    @Override
-    protected void onResume() {
-    	// TODO Auto-generated method stub
-    	super.onResume();
-    	mGameThread.onResume();
-    }
+		holder.addCallback(this);
+		view.setOnTouchListener(this);
+		setContentView(view);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mGameThread.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		mGameThread.onResume();
+	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -66,21 +68,22 @@ public class GameActivity extends Activity implements OnTouchListener, SurfaceHo
 		mGameThread.onTouch(event);
 		return true;
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if (!mGameThread.onBackPressed()) {
 			super.onBackPressed();
 		}
 	}
-    
+
 	/**
 	 * Adds a game screen to the top of the screen stack
-	 * @param screen An implemented screen
+	 * 
+	 * @param screen
+	 *            An implemented screen
 	 */
-	public void addScreen(Screen screen)
-	{
-		mScreenManager.addScreen(screen);
+	public void addScreen(Screen screen) {
+		mScreenManager.addScreenUI(screen);
 	}
 
 	/**
@@ -89,5 +92,5 @@ public class GameActivity extends Activity implements OnTouchListener, SurfaceHo
 	public ScreenManager getScreenManager() {
 		return mScreenManager;
 	}
-    
+
 }

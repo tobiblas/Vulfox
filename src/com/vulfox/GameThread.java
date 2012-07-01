@@ -1,5 +1,7 @@
 package com.vulfox;
 
+import java.util.LinkedList;
+
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -7,10 +9,10 @@ import android.view.SurfaceHolder;
 public class GameThread extends Thread {
 
 	/**
-	 * Default frame delay time (30 fps)
+	 * Default frame delay time (60 fps)
 	 */
 	private static final long DEFAULT_FRAME_TIME = (long) Math
-			.round(1000.0 / 45.0);
+			.round(1000.0 / 60.0);
 
 	/**
 	 * Indicates if the thread loop should use fixed time updates
@@ -56,6 +58,9 @@ public class GameThread extends Thread {
 	 * Manager for screen handling
 	 */
 	private ScreenManager mScreenManager;
+	
+	/** List holding all motion events not yet handled. */
+	private LinkedList<MotionEvent> mMotionEvents;
 
 	/**
 	 * Creates the game thread that will be handling the screens
@@ -69,9 +74,11 @@ public class GameThread extends Thread {
 	 */
 	public GameThread(SurfaceHolder surfaceHolder,
 			ScreenManager screenManager) {
+		setName("GameThread");
 		mSurfaceHolder = surfaceHolder;
 		mScreenManager = screenManager;
 		mFixedTimeStep = true;
+		mMotionEvents = new LinkedList<MotionEvent>();
 	}
 
 	/**
@@ -100,10 +107,12 @@ public class GameThread extends Thread {
 				float timeStep = (float) ((System.nanoTime() - startTime) / 1000000000d);
 				startTime = System.nanoTime();
 
-//				for (MotionEvent motionEvent : mMotionEvents) {
-//					mScreenManager.handleInput(motionEvent);
-//				}
-//				mMotionEvents.clear();
+				synchronized (mMotionEvents) {
+					for (MotionEvent motionEvent : mMotionEvents) {
+						mScreenManager.handleInput(motionEvent);
+					}
+					mMotionEvents.clear();
+				}
 
 				mScreenManager.update(timeStep);
 
@@ -112,9 +121,16 @@ public class GameThread extends Thread {
 					mScreenManager.draw(canvas);
 					mSurfaceHolder.unlockCanvasAndPost(canvas);
 				}
+				
+				//If another thread has posted a new screen add it so that it can be drawn.
+				mScreenManager.addScreens();
+				
+				//If another thread has posted a remove of a screen remove it.
+				mScreenManager.removeScreens();
 			}
 			
 			if (mFixedTimeStep) {
+				
 				long frameTime = ((System.nanoTime() - startTime) / 1000000L);
 				long sleepTime = mFixedFrameTime - frameTime;
 				if (sleepTime > 0) {
@@ -150,10 +166,9 @@ public class GameThread extends Thread {
 	 * @param motionEvent
 	 *            A touch motion event
 	 */
-	public synchronized void onTouch(MotionEvent motionEvent) {
-		//mMotionEvents.addLast(MotionEvent.obtain(motionEvent));
-		if(mScreenManager.isInitialized()) {
-			mScreenManager.handleInput(motionEvent);
+	public void onTouch(MotionEvent motionEvent) {
+		synchronized (mMotionEvents) {
+			mMotionEvents.addLast(MotionEvent.obtain(motionEvent));
 		}
 	}
 

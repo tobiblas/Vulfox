@@ -1,6 +1,9 @@
 package com.vulfox;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
+
+import com.vulfox.util.Logger;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,18 +17,22 @@ public class ScreenManager {
 	 * Application context
 	 */
 	private Context mContext;
-	
+
 	/**
-	 * List of all the screens that are present in the game
-	 * Used as a stack to keep track of the top screen 
+	 * List of all the screens that are present in the game Used as a stack to
+	 * keep track of the top screen
 	 */
 	private LinkedList<Screen> mScreenList;
+	
+	private LinkedList<Screen> mScreensToAddList;
+	
+	private LinkedList<Screen> mScreensToRemoveList;
 
 	/**
 	 * Width of the draw surface
 	 */
 	private int mWidth;
-	
+
 	/**
 	 * Height of the draw surface
 	 */
@@ -38,27 +45,34 @@ public class ScreenManager {
 
 	/**
 	 * Creates a new uninitialized screen manager
-	 * @param context Application context
+	 * 
+	 * @param context
+	 *            Application context
 	 */
 	public ScreenManager(Context context) {
 		mContext = context;
 		mScreenList = new LinkedList<Screen>();
+		mScreensToAddList = new LinkedList<Screen>();
+		mScreensToRemoveList = new LinkedList<Screen>();
 		mInitialized = false;
 	}
-	
+
 	/**
 	 * Tells if the manager has been initialized
+	 * 
 	 * @return True if initialized
 	 */
-	public boolean isInitialized()
-	{
+	public boolean isInitialized() {
 		return mInitialized;
 	}
 
 	/**
 	 * Initializes the screen manager and any screens that have been added
-	 * @param width Width of the draw surface
-	 * @param height Height of the draw surface
+	 * 
+	 * @param width
+	 *            Width of the draw surface
+	 * @param height
+	 *            Height of the draw surface
 	 */
 	public synchronized void initialize(int width, int height) {
 		mWidth = width;
@@ -71,65 +85,145 @@ public class ScreenManager {
 	}
 
 	/**
-	 * Adds a screen to the top of the screen stack
-	 * @param screen A screen implementation
+	 * To be called from UI thread.
+	 * @param screen
 	 */
-	public synchronized void addScreen(Screen screen) {
-		if (mInitialized) {
-			screen.initialize(mWidth, mHeight, mContext, this);
+	public void addScreenUI(Screen screen) {
+		synchronized(mScreensToAddList) {
+			Logger.logWithTimeStamp("Adding screen:" + screen.toString());
+			mScreensToAddList.add(screen);
 		}
-
-		mScreenList.addLast(screen);
-		screen.onTop();
 	}
 	
-	public synchronized boolean removeScreen(Screen screen) {
+	/**
+	 * Adds screens to the top of the screen stack. To be called by GameThread once per frame.
+	 */
+	public void addScreens() {
 		
-		boolean result = mScreenList.remove(screen);
-		
-		if (!mScreenList.isEmpty()) {
-			mScreenList.getLast().onTop();
+		checkCorrectThread();
+	
+		synchronized(mScreensToAddList) {
+
+			for (Screen screen : mScreensToAddList) {
+				if (mInitialized) {
+					screen.initialize(mWidth, mHeight, mContext, this);
+				}
+	
+				mScreenList.addLast(screen);
+				screen.onTop();
+			}
+			mScreensToAddList.clear();
 		}
-		
+	}
+
+	/**
+	 * To be called from UI thread
+	 * @param screen
+	 * @return
+	 */
+	public boolean removeScreenUI(Screen screen) {
+		boolean result = false;
+		synchronized(mScreensToRemoveList) {
+			Logger.logWithTimeStamp("Removeing screen:" + screen.toString());
+			result = mScreensToRemoveList.add(screen);
+		}
 		return result;
 	}
 	
-	public synchronized Dialog onCreateDialog(int id, Dialog dialog, Bundle args) {
-		if (!mScreenList.isEmpty()) {
-			return mScreenList.getLast().onCreateDialog(id, dialog, args);
+	/**
+	 * Removes screens from the top of the screen stack. To be called by GameThread once per frame.
+	 */
+	public void removeScreens() {
+
+		//Limitation: only 1 screen can be removed in one frame.
+		
+		checkCorrectThread();
+		
+		if (mScreensToRemoveList.size() == 0) {
+			return;
 		}
+		
+		synchronized (mScreensToRemoveList) {
+
+			Screen topScreenToRemove = mScreensToRemoveList.remove();
+			
+			Logger.logWithTimeStamp("Removing scren: " + topScreenToRemove);
+			mScreenList.remove(topScreenToRemove);
+
+			if (!mScreenList.isEmpty()) {
+				mScreenList.getLast().onTop();
+			}
+		}
+
+	}
+
+	public Dialog onCreateDialog(int id, Dialog dialog, Bundle args) {
+		
+		Screen topScreen = null;
+		
+		try {
+			topScreen = mScreenList.getLast(); // no need to synchronize.
+			return topScreen.onCreateDialog(id, dialog, args);
+		} catch (NoSuchElementException e) {
+			//Ignoring
+		}
+		
 		return null;
 	}
 
 	/**
-	 * Relays the motion event to the top screen 
+	 * Relays the motion event to the top screen
+	 * 
 	 * @param motionEvent
 	 */
 	public void handleInput(MotionEvent motionEvent) {
-		if(!mInitialized) {
+
+		checkCorrectThread();
+		
+		if (!mInitialized) {
 			return;
 		}
-		
+
 		if (mScreenList.size() > 0) {
 			Screen topScreen = mScreenList.getLast();
-			boolean eventConsumedByScreenComponent = topScreen.handleComponentInput(motionEvent);
+			boolean eventConsumedByScreenComponent = topScreen
+					.handleComponentInput(motionEvent);
 			if (!eventConsumedByScreenComponent) {
 				topScreen.handleInput(motionEvent);
 			}
+		}
+
+	}
+
+    /**
+     * Checks so that the GameThread is the one trying to access.
+     */
+	private void checkCorrectThread() {
+		if (Thread.currentThread().getName().equals("GameThread")) {
+			return;
+		} else {
+			throw new RuntimeException(
+					"Incorrect thread calling screenmanager. Caller: "
+							+ Thread.currentThread().getName());
 		}
 	}
 
 	/**
 	 * Updates the top screen
-	 * @param timeStep Time since the last frame in milliseconds
+	 * 
+	 * @param timeStep
+	 *            Time since the last frame in milliseconds
 	 */
 	public void update(float timeStep) {
-		if(!mInitialized) {
+
+		checkCorrectThread();
+
+		if (!mInitialized) {
 			return;
 		}
-		
+
 		if (mScreenList.size() > 0) {
-			
+
 			Screen topScreen = mScreenList.getLast();
 			if (topScreen.coversWholeScreen()) {
 				topScreen.update(timeStep);
@@ -148,15 +242,20 @@ public class ScreenManager {
 
 	/**
 	 * Draws the top screen
-	 * @param canvas Canvas to draw to
+	 * 
+	 * @param canvas
+	 *            Canvas to draw to
 	 */
 	public void draw(Canvas canvas) {
-		if(!mInitialized) {
+
+		checkCorrectThread();
+
+		if (!mInitialized) {
 			return;
 		}
-		
+
 		if (mScreenList.size() > 0) {
-			
+
 			Screen topScreen = mScreenList.getLast();
 			if (topScreen.coversWholeScreen()) {
 				topScreen.draw(canvas);
@@ -173,34 +272,41 @@ public class ScreenManager {
 		}
 	}
 
+	/**
+	 * This will be called by UI thread when user presses the back button.
+	 * @return
+	 */
 	public boolean handleBackPressed() {
+
 		if (!mInitialized) {
 			return false;
 		}
 
-		if (mScreenList.size() > 0) {
-			Screen topScreen = mScreenList.getLast();
-			return topScreen.handleBackPressed();			
+		Screen topScreen = null;
+			
+		try {
+			topScreen = mScreenList.getLast(); // no need to synchronize.
+			return topScreen.handleBackPressed();
+		} catch (NoSuchElementException e) {
+			//Ignoring
 		}
-		
 		return false;
 	}
 
-	
-	public synchronized boolean removeTopScreen() {
-		
+	public void removeTopScreen() {
+
 		if (!mInitialized) {
-			return false;
-		}
-		
-		if (mScreenList.size() > 0) {
-			mScreenList.removeLast();
-			if (!mScreenList.isEmpty()) {
-				mScreenList.getLast().onTop();
-			}
+			return;
 		}
 
-		return true;
+		Screen topScreen = null;
+		
+		try {
+			topScreen = mScreenList.getLast(); // no need to synchronize.
+			removeScreenUI(topScreen);
+		} catch (NoSuchElementException e) {
+			//Ignoring
+		}
 	}
 
 }
