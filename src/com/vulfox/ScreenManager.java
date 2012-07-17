@@ -308,5 +308,28 @@ public class ScreenManager {
 			//Ignoring
 		}
 	}
+	
+	public void removeTopScreens(int screensToRemove) {
+
+		if (!mInitialized) {
+			return;
+		}
+
+		Screen topScreen = null;
+		
+		try {
+			
+			for (int i = 0; i < screensToRemove; i++) {
+				topScreen = mScreenList.get(mScreenList.size() - (i+1));
+				removeScreenUI(topScreen);
+			}
+			
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		
+	}
 
 }
