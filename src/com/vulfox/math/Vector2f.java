@@ -345,4 +345,12 @@ public class Vector2f {
 		mX = mY;
 		mY = -temp;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Vector2f [mX=" + mX + ", mY=" + mY + "]";
+	}
 }

@@ -3,6 +3,7 @@ package com.vulfox;
 import java.util.LinkedList;
 
 import android.graphics.Canvas;
+import android.graphics.PixelFormat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -76,6 +77,7 @@ public class GameThread extends Thread {
 			ScreenManager screenManager) {
 		setName("GameThread");
 		mSurfaceHolder = surfaceHolder;
+		mSurfaceHolder.setFormat(PixelFormat.RGBA_8888);
 		mScreenManager = screenManager;
 		mFixedTimeStep = true;
 		mMotionEvents = new LinkedList<MotionEvent>();

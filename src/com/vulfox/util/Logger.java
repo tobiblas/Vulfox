@@ -13,13 +13,13 @@ public class Logger {
 
 	public static void log(String message) {
 		if (doLog) {
-			Log.d("Logger", message);
+			Log.d("BAPELSIN", message);
 		}
 	}
 
 	public static void logWithTimeStamp(String message) {
 		if (doLog) {
-			Log.d("Logger", sdf.format(new Date()) + " " + message + " Thread: " + Thread.currentThread().getName());
+			Log.d("BAPELSIN", sdf.format(new Date()) + " " + message + " Thread: " + Thread.currentThread().getName());
 		}
 	}
 }

@@ -21,7 +21,9 @@ public class ImageLoader {
 		if (context != null) {
 			InputStream is = context.getResources().openRawResource(resourceID);
 			try {
-				bitmap = BitmapFactory.decodeStream(is);
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+				bitmap = BitmapFactory.decodeStream(is, null, options);
 			} catch (OutOfMemoryError e) {
 				e.printStackTrace();
 			} finally {
