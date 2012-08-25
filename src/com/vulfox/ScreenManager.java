@@ -332,4 +332,20 @@ public class ScreenManager {
 		
 	}
 
+	public void handleShowOptionsMenu() {
+		
+		if (!mInitialized) {
+			return;
+		}
+
+		Screen topScreen = null;
+			
+		try {
+			topScreen = mScreenList.getLast(); // no need to synchronize.
+			topScreen.handleShowOptionsMenu();
+		} catch (NoSuchElementException e) {
+			//Ignoring
+		}
+	}
+
 }

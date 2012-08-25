@@ -2,6 +2,7 @@ package com.vulfox;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -68,6 +69,12 @@ public class GameActivity extends Activity implements OnTouchListener,
 		mGameThread.onTouch(event);
 		return true;
 	}
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	mGameThread.onPrepareOptionsMenu();
+    	return true;
+    }
 
 	@Override
 	public void onBackPressed() {

@@ -245,4 +245,11 @@ public abstract class Screen {
 		this.mCoversWholeScreen = coversWholeScreen;
 	}
 
+	/**
+	 * Will be called when user presses menu button.
+	 * Should be overridden by subclass if needed
+	 */
+	public void handleShowOptionsMenu() {
+	}
+
 }

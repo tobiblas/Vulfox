@@ -65,7 +65,7 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 	public StretchableImageButtonComponent(Context context, int background,
 			int backgroundPressed, String text, int textColor,
 			int textShadowColor, float textSizeDp, int widthDp, int heightDp,
-			int dpi) {
+			int dpi, float scale) {
 
 		this.mBackground = ImageLoader.loadFromResource(context, background);
 		this.mBackgroundPressed = ImageLoader.loadFromResource(context,
@@ -77,8 +77,12 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 		this.mTextPaint.setAntiAlias(true);
 		this.mTextPaint.setTextSize((int) (textSizeDp * (dpi / 160.0f)));
 		this.mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
+		
 		this.mTextPaintShadow = new Paint(mTextPaint);
 		this.mTextPaintShadow.setColor(textShadowColor);
+		this.mTextPaintShadow.setStyle(Paint.Style.STROKE);
+		this.mTextPaintShadow.setStrokeWidth(Math.round(3 * scale));
+		
 		this.mTextRect = new Rect();
 		this.mTextPaint.getTextBounds(mText, 0, mText.length(), mTextRect);
 
@@ -116,7 +120,7 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 	 */
 	public StretchableImageButtonComponent(Context context, int background,
 			String text, int textColor, int textShadowColor, float textSizeDp, 
-			int widthDp, int heightDp, int dpi) {
+			int widthDp, int heightDp, int dpi, float scale) {
 
 		this.mBackground = ImageLoader.loadFromResource(context, background);
 
@@ -126,10 +130,13 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 		this.mTextPaint.setAntiAlias(true);
 		this.mTextPaint.setTextSize((int) (textSizeDp * (dpi / 160.0f)));
 		this.mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
-		this.mTextPaintShadow = new Paint(mTextPaint);
-		this.mTextPaintShadow.setColor(textShadowColor);
 		this.mTextRect = new Rect();
 		this.mTextPaint.getTextBounds(mText, 0, mText.length(), mTextRect);
+		
+		this.mTextPaintShadow = new Paint(mTextPaint);
+		this.mTextPaintShadow.setColor(textShadowColor);
+		this.mTextPaintShadow.setStyle(Paint.Style.STROKE);
+		this.mTextPaintShadow.setStrokeWidth(Math.round(3 * scale));
 
 		setWidthAndHeightInDp(widthDp, heightDp, dpi);
 
@@ -273,8 +280,8 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 
 		// Draw shadow text
 		canvas.drawText(mText, getPositionX() + getWidth() / 2 - mTextRect.width()
-				/ 2 + 2, getPositionY() + getHeight() / 2 + mTextRect.height() / 2
-				- mTextPaintShadow.getFontMetrics().descent / 2 + 2, mTextPaintShadow);
+				/ 2, getPositionY() + getHeight() / 2 + mTextRect.height() / 2
+				- mTextPaint.getFontMetrics().descent / 2, mTextPaintShadow);
 
 		// Draw text
 		canvas.drawText(mText, getPositionX() + getWidth() / 2 - mTextRect.width()

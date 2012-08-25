@@ -232,4 +232,8 @@ public class GameThread extends Thread {
 		return mScreenManager.handleBackPressed();
 	}
 
+	public void onPrepareOptionsMenu() {
+		mScreenManager.handleShowOptionsMenu();
+	}
+
 }
