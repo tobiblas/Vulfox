@@ -1,5 +1,7 @@
 package com.vulfox.math;
 
+import android.util.FloatMath;
+
 public class Vector2f {
 
 	/**
@@ -120,7 +122,7 @@ public class Vector2f {
 	 * @return
 	 */
 	public float getLength() {
-		return (float) Math.sqrt(mX * mX + mY * mY);
+		return (float) FloatMath.sqrt(mX * mX + mY * mY);
 	}
 
 	/**
@@ -166,6 +168,16 @@ public class Vector2f {
 	 */
 	public float dot(Vector2f other) {
 		return mX * other.mX + mY * other.mY;
+	}
+	
+	/**
+	 * Calculates the dot product between this vector and vector represented by provided x and y.
+	 * @param x
+	 * @param y  
+	 * @return The dot product
+	 */
+	public float dot(float x, float y) {
+		return mX * x + mY * y;
 	}
 
 	/**

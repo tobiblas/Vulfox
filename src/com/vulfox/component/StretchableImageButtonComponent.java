@@ -277,17 +277,45 @@ public class StretchableImageButtonComponent extends ButtonComponent {
 			canvas.drawBitmap(mBackground, getPositionX(),
 					getPositionY(), mTintPaint);
 		}
-
+		
+		
+		float glyphAdjuster = 0.0f;
+		if (hasGlyph(mText)) {
+			glyphAdjuster = mTextPaint.getFontMetrics().bottom / 2;
+		}
+		
 		// Draw shadow text
 		canvas.drawText(mText, getPositionX() + getWidth() / 2 - mTextRect.width()
 				/ 2, getPositionY() + getHeight() / 2 + mTextRect.height() / 2
-				- mTextPaint.getFontMetrics().descent / 2, mTextPaintShadow);
+				- glyphAdjuster, mTextPaintShadow);
 
 		// Draw text
 		canvas.drawText(mText, getPositionX() + getWidth() / 2 - mTextRect.width()
 				/ 2, getPositionY() + getHeight() / 2 + mTextRect.height() / 2
-				- mTextPaint.getFontMetrics().descent / 2, mTextPaint);
+				- glyphAdjuster, mTextPaint);
 
+		
+	}
+
+	private boolean hasGlyph(String text) {
+		
+		if (text.contains("y")) {
+			return true;
+		}
+		if (text.contains("q")) {
+			return true;
+		}
+		if (text.contains("p")) {
+			return true;
+		}
+		if (text.contains("g")) {
+			return true;
+		}
+		if (text.contains("j")) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
