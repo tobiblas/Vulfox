@@ -260,13 +260,16 @@ public class ScreenManager {
 			if (topScreen.coversWholeScreen()) {
 				topScreen.draw(canvas);
 				topScreen.drawComponents(canvas);
+				topScreen.postDraw(canvas);
 			} else {
 				if (mScreenList.size() > 1) {
 					Screen backScreen = mScreenList.get(mScreenList.size() - 2);
 					backScreen.draw(canvas);
 					backScreen.drawComponents(canvas);
+					backScreen.postDraw(canvas);
 					topScreen.draw(canvas);
 					topScreen.drawComponents(canvas);
+					topScreen.postDraw(canvas);
 				}
 			}
 		}

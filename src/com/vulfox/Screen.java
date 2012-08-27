@@ -123,6 +123,16 @@ public abstract class Screen {
 	}
 	
 	/**
+	 * Is called once at the end of every frame after screen components has been drawn.
+	 * 
+	 * @param canvas
+	 *            Canvas to draw to
+	 */
+	public void postDraw(Canvas canvas) {
+
+	}
+	
+	/**
 	 * Is called by the game activity if a dialog is to be shown.
 	 * 
 	 * @param id
