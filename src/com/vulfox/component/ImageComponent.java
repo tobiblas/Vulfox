@@ -27,10 +27,14 @@ public class ImageComponent extends ButtonComponent {
 		mBitmap = bitmap;
 		setHeight(mBitmap.getHeight());
 		setWidth(mBitmap.getWidth());
-		mTintWhenClicked = tintWhenClicked;
+		setTintWhenClicked(tintWhenClicked);
 		mRect = new Rect();
 		mImagePaint = new Paint();
 		aspectRatio = mBitmap.getWidth() / (float) mBitmap.getHeight();
+	}
+	
+	public void setTintWhenClicked(boolean tintWhenClicked) {
+		mTintWhenClicked = tintWhenClicked;
 		if (tintWhenClicked) {
 			mTintPaint = new Paint();
 			ColorFilter filter = new LightingColorFilter(0x11cccccc, 1);
@@ -120,6 +124,15 @@ public class ImageComponent extends ButtonComponent {
 	 */
 	public Bitmap getBitmap() {
 		return mBitmap;
+	}
+	
+	/**
+	 * @param bitmap the bitmap to set.
+	 */
+	public void setBitmap(Bitmap bitmap) {
+		mBitmap = bitmap;
+		setHeight(mBitmap.getHeight());
+		setWidth(mBitmap.getWidth());
 	}
 
 	@Override

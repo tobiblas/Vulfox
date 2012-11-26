@@ -283,6 +283,16 @@ public class Vector2f {
 	public Vector2f add(Vector2f other) {
 		return new Vector2f(mX + other.mX, mY + other.mY);
 	}
+	
+	/**
+	 * Adds the specified values to this vector.
+	 * @param other Vector2f to add to this vector.
+	 * @return Resulting Vector2f from the addition.
+	 */
+	public void add(float x, float y) {
+		mX += x;
+		mY += y;
+	}
 
 	/**
 	 * Adds the specified Vector2f to this vector and stores the result in the specified Vector2f

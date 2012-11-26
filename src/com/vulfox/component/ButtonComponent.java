@@ -43,6 +43,10 @@ public abstract class ButtonComponent extends ScreenComponent {
 	public void setEventListener(EventListener listener) {
 		this.listener = listener;
 	}
+	
+	public EventListener getEventListener() {
+		return this.listener;
+	}
 
 	/**
 	 * Called when a button is clicked.
