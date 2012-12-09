@@ -3,8 +3,6 @@ package com.vulfox;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-import com.vulfox.util.Logger;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -90,7 +88,6 @@ public class ScreenManager {
 	 */
 	public void addScreenUI(Screen screen) {
 		synchronized(mScreensToAddList) {
-			Logger.logWithTimeStamp("Adding screen:" + screen.toString());
 			mScreensToAddList.add(screen);
 		}
 	}
@@ -124,7 +121,6 @@ public class ScreenManager {
 	public boolean removeScreenUI(Screen screen) {
 		boolean result = false;
 		synchronized(mScreensToRemoveList) {
-			Logger.logWithTimeStamp("Removeing screen:" + screen.toString());
 			result = mScreensToRemoveList.add(screen);
 		}
 		return result;
@@ -147,7 +143,6 @@ public class ScreenManager {
 
 			Screen topScreenToRemove = mScreensToRemoveList.remove();
 			
-			Logger.logWithTimeStamp("Removing scren: " + topScreenToRemove);
 			mScreenList.remove(topScreenToRemove);
 
 			if (!mScreenList.isEmpty()) {
